@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ヲシテ索引システム</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #fffbe6;
+      color: #333;
+      padding: 1em;
+    }
+    input {
+      width: 100%;
+      font-size: 1.2em;
+      padding: 0.5em;
+      margin-bottom: 1em;
+    }
+    .result {
+      border-top: 1px solid #ccc;
+      padding-top: 1em;
+    }
+    .entry {
+      margin-bottom: 1em;
+    }
+    .page {
+      font-weight: bold;
+      color: #663300;
+    }
+    .line {
+      white-space: pre-wrap;
+    }
+    mark {
+      background-color: yellow;
+    }
+  </style>
+</head>
+<body>
+  <h1>ヲシテ三文献索引</h1>
+  <input type="text" id="search" placeholder="検索語を入力してください（スペース区切り可）" />
+  <div class="result" id="result"></div>
+
+  <script>
+    let data = [];
+
+    // 正規化（全角→半角、カタカナ→ひらがな、小文字化）
+    function normalizeText(text) {
+      return text
+        .toLowerCase()
+        .replace(/[Ａ-Ｚａ-ｚ０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+        .replace(/[ァ-ン]/g, s => String.fromCharCode(s.charCodeAt(0) - 0x60));
+    }
+
+    fetch("jousou_data.json")
+      .then(response => response.json())
+      .then(json => { data = json; })
+      .catch(err => console.error("データ読み込み失敗:", err));
+
+    document.getElementById("search").addEventListener("input", function () {
+      const keywordRaw = this.value.trim();
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "";
+
+      if (keywordRaw === "") return;
+
+      const keywords = keywordRaw.split(/\s+/).map(normalizeText);
+
+      const results = data.filter(entry =>
+        keywords.every(kw =>
+          normalizeText(entry.見出し語 || "").includes(kw) ||
+          entry.行.some(line => normalizeText(line).includes(kw))
+        )
+      );
+
+      results.forEach(entry => {
+        const entryDiv = document.createElement("div");
+        entryDiv.className = "entry";
+
+        const page = document.createElement("div");
+        page.className = "page";
+        page.textContent = `『${entry.文献}』 ${entry.ページ}`;
+
+        const lines = document.createElement("div");
+        lines.className = "line";
+
+        const highlighted = entry.行.map(line => {
+          let resultLine = line;
+          keywords.forEach(kw => {
+            const reg = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi");
+            resultLine = resultLine.replace(reg, match => `<mark>${match}</mark>`);
+          });
+          return resultLine;
+        });
+
+        lines.innerHTML = highlighted.join("<br>");
+        entryDiv.appendChild(page);
+        entryDiv.appendChild(lines);
+        resultDiv.appendChild(entryDiv);
+      });
+    });
+  </script>
+</body>
+</html>
