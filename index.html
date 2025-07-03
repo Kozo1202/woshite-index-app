@@ -64,9 +64,13 @@
         .replace(/[ァ-ン]/g, s => String.fromCharCode(s.charCodeAt(0) - 0x60));
     }
 
-    fetch("jousou_data.json")
-      .then(response => response.json())
-      .then(json => { data = json; })
+    // 複数データを読み込む
+    const sources = ["jousou_data.json", "hotsuma_aya1.json"];
+
+    Promise.all(sources.map(src => fetch(src).then(res => res.json())))
+      .then(jsonArrays => {
+        data = jsonArrays.flat();
+      })
       .catch(err => console.error("データ読み込み失敗:", err));
 
     document.getElementById("search").addEventListener("input", function () {
@@ -99,7 +103,7 @@
         const highlighted = entry.行.map(line => {
           let resultLine = line;
           keywords.forEach(kw => {
-            const reg = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi");
+            const reg = new RegExp(kw.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&'), "gi");
             resultLine = resultLine.replace(reg, match => `<mark>${match}</mark>`);
           });
           return resultLine;
@@ -115,7 +119,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
+        navigator.serviceWorker.register('service-worker-v3.js')
           .then(reg => console.log('SW registered:', reg.scope))
           .catch(err => console.error('SW registration failed:', err));
       });
