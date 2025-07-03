@@ -1,4 +1,4 @@
-const CACHE_NAME = 'woshite-index-cache-v2';
+const CACHE_NAME = 'woshite-index-cache-v3';
 const urlsToCache = [
   './',
   './index.html',
@@ -6,7 +6,8 @@ const urlsToCache = [
   './icon-192.png',
   './icon-512.png',
   './jousou_data.json',
-  './hotsuma_aya1.json'  // ← これを忘れず追加！
+  './hotsuma_aya1.json',
+  './hotsuma_aya2.json'  // ← 2アヤのデータを追加！
 ];
 
 // インストール時にキャッシュ

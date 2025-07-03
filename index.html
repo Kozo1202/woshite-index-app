@@ -64,8 +64,12 @@
         .replace(/[ァ-ン]/g, s => String.fromCharCode(s.charCodeAt(0) - 0x60));
     }
 
-    // 複数データを読み込む
-    const sources = ["jousou_data.json", "hotsuma_aya1.json"];
+    // 🔽🔽🔽【✅ データファイル追加箇所】🔽🔽🔽
+    const sources = [
+      "jousou_data.json",
+      "hotsuma_aya1.json",
+      "hotsuma_aya2.json"  // ← ✅ ここに新規追加したアヤのJSONファイル
+    ];
 
     Promise.all(sources.map(src => fetch(src).then(res => res.json())))
       .then(jsonArrays => {
@@ -116,10 +120,12 @@
       });
     });
   </script>
+
+  <!-- 🔽🔽🔽【✅ Service Worker 登録スクリプト】🔽🔽🔽 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker-v3.js')
+        navigator.serviceWorker.register('service-worker-v3.js')  // ← ✅ v3のService Workerを使用
           .then(reg => console.log('SW registered:', reg.scope))
           .catch(err => console.error('SW registration failed:', err));
       });
