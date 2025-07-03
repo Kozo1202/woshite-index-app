@@ -104,7 +104,7 @@
         const highlighted = entry.行.map(line => {
           let resultLine = line;
           keywords.forEach(kw => {
-            const reg = new RegExp(kw.replace(/[.*+?^${}()|[\]\]/g, '\\$&'), "gi");
+            const reg = new RegExp(kw.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), "gi");
             resultLine = resultLine.replace(reg, match => `<mark>${match}</mark>`);
           });
           return resultLine;
