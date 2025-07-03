@@ -4,7 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ヲシテ索引システム</title>
+
+  <!-- ✅ フォント読み込み -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP&display=swap" rel="stylesheet">
+
+  <!-- ✅ マニフェストの追加 -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- ✅ アイコン（PWA用） -->
+  <link rel="icon" href="icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icon-512.png">
+  <meta name="theme-color" content="#fffbe6">
+
   <style>
     body {
       font-family: 'Noto Serif JP', serif;
@@ -100,6 +111,15 @@
         resultDiv.appendChild(entryDiv);
       });
     });
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.error('SW registration failed:', err));
+      });
+    }
   </script>
 </body>
 </html>
