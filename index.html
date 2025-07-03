@@ -82,34 +82,14 @@
 
       const keywords = keywordRaw.split(/\s+/).map(normalizeText);
 
-      const results = data
-        .map(entry => {
-          const matchedLines = entry.行.map(line => {
-            let highlightedLine = line;
-            let matched = false;
-
-            keywords.forEach(kw => {
-              const reg = new RegExp(kw.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), "gi");
-              if (reg.test(normalizeText(line))) {
-                matched = true;
-                highlightedLine = highlightedLine.replace(reg, match => `<mark>${match}</mark>`);
-              }
-            });
-
-            return matched ? highlightedLine : null;
-          }).filter(Boolean);
-
-          if (matchedLines.length > 0) {
-            return {
-              文献: entry.文献,
-              ページ: entry.ページ,
-              行: matchedLines
-            };
-          } else {
-            return null;
-          }
-        })
-        .filter(Boolean);
+      const results = data.filter(entry =>
+        entry.行.some(line =>
+          keywords.some(kw => {
+            const reg = new RegExp(`${kw.replace(/[-/\^$*+?.()|[\]{}]/g, '\$&')}`, "gi");
+            return reg.test(normalizeText(line));
+          })
+        )
+      );
 
       results.forEach(entry => {
         const entryDiv = document.createElement("div");
@@ -121,8 +101,17 @@
 
         const lines = document.createElement("div");
         lines.className = "line";
-        lines.innerHTML = entry.行.join("<br>");
 
+        const highlightedLines = entry.行.map(line => {
+          let resultLine = line;
+          keywords.forEach(kw => {
+            const reg = new RegExp(`${kw.replace(/[-/\^$*+?.()|[\]{}]/g, '\$&')}`, "gi");
+            resultLine = resultLine.replace(reg, match => `<mark>${match}</mark>`);
+          });
+          return resultLine;
+        });
+
+        lines.innerHTML = highlightedLines.join("<br>");
         entryDiv.appendChild(page);
         entryDiv.appendChild(lines);
         resultDiv.appendChild(entryDiv);
