@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ヲシテ索引システム</title>
-  <link rel="manifest" href="manifest.json" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Noto Serif JP', serif;
       background-color: #fffbe6;
       color: #333;
       padding: 1em;
@@ -100,19 +100,6 @@
         resultDiv.appendChild(entryDiv);
       });
     });
-  </script>
-
-  <!-- Service Worker 登録 -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", function () {
-        navigator.serviceWorker.register("service-worker.js").then(function () {
-          console.log("Service Worker 登録完了！");
-        }).catch(function (error) {
-          console.log("Service Worker 登録失敗:", error);
-        });
-      });
-    }
   </script>
 </body>
 </html>
