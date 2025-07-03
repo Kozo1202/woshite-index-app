@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -91,6 +90,7 @@
 
       const results = data.filter(entry =>
         keywords.every(kw =>
+          normalizeText(entry.見出し語 || "").includes(kw) ||
           entry.行.some(line => normalizeText(line).includes(kw))
         )
       );
@@ -109,7 +109,8 @@
         const highlighted = entry.行.map(line => {
           let resultLine = line;
           keywords.forEach(kw => {
-            const reg = new RegExp(kw.replace(/[.*+?^${}()|[\]\]/g, '\$&'), "gi");
+            const escaped = kw.replace(/[.*+?^${}()|[\]\]/g, '\$&');
+            const reg = new RegExp(escaped, "gi");
             resultLine = resultLine.replace(reg, match => `<mark>${match}</mark>`);
           });
           return resultLine;
@@ -123,7 +124,6 @@
     });
   </script>
 
-  <!-- ✅ Service Worker 登録スクリプト -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'woshite-index-cache-v3';
+const CACHE_NAME = 'woshite-index-cache-v2';
 const urlsToCache = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ const urlsToCache = [
   './hotsuma_aya3.json',
   './hotsuma_aya4.json',
   './hotsuma_aya5.json'
+];
 
 // インストール時にキャッシュ
 self.addEventListener('install', event => {
