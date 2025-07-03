@@ -8,7 +8,8 @@ const urlsToCache = [
   './jousou_data.json',
   './hotsuma_aya1.json',
   './hotsuma_aya2.json',
-  './hotsuma_aya3.json'  // ← 3アヤのデータを追加！
+  './hotsuma_aya3.json',
+  './hotsuma_aya4.json'  // ← 4アヤのデータを追加！
 ];
 
 // インストール時にキャッシュ
