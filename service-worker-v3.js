@@ -9,8 +9,8 @@ const urlsToCache = [
   './hotsuma_aya1.json',
   './hotsuma_aya2.json',
   './hotsuma_aya3.json',
-  './hotsuma_aya4.json'  // ← 4アヤのデータを追加！
-];
+  './hotsuma_aya4.json',
+  './hotsuma_aya5.json'
 
 // インストール時にキャッシュ
 self.addEventListener('install', event => {

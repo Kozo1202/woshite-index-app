@@ -70,7 +70,8 @@
       "hotsuma_aya1.json",
       "hotsuma_aya2.json",
       "hotsuma_aya3.json",
-      "hotsuma_aya4.json"  // ← ✅ ここに新規追加したアヤのJSONファイル
+      "hotsuma_aya4.json",
+      "hotsuma_aya5.json"
     ];
 
     Promise.all(sources.map(src => fetch(src).then(res => res.json())))
