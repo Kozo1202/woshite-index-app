@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -64,7 +65,6 @@
         .replace(/[ァ-ン]/g, s => String.fromCharCode(s.charCodeAt(0) - 0x60));
     }
 
-    // 🔽🔽🔽【✅ データファイル追加箇所】🔽🔽🔽
     const sources = [
       "jousou_data.json",
       "hotsuma_aya1.json",
@@ -91,7 +91,6 @@
 
       const results = data.filter(entry =>
         keywords.every(kw =>
-          normalizeText(entry.見出し語 || "").includes(kw) ||
           entry.行.some(line => normalizeText(line).includes(kw))
         )
       );
@@ -110,7 +109,7 @@
         const highlighted = entry.行.map(line => {
           let resultLine = line;
           keywords.forEach(kw => {
-            const reg = new RegExp(kw.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&'), "gi");
+            const reg = new RegExp(kw.replace(/[.*+?^${}()|[\]\]/g, '\$&'), "gi");
             resultLine = resultLine.replace(reg, match => `<mark>${match}</mark>`);
           });
           return resultLine;
@@ -124,11 +123,11 @@
     });
   </script>
 
-  <!-- 🔽🔽🔽【✅ Service Worker 登録スクリプト】🔽🔽🔽 -->
+  <!-- ✅ Service Worker 登録スクリプト -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker-v3.js')  // ← ✅ v3のService Workerを使用
+        navigator.serviceWorker.register('service-worker-v3.js')
           .then(reg => console.log('SW registered:', reg.scope))
           .catch(err => console.error('SW registration failed:', err));
       });
