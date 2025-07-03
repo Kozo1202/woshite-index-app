@@ -101,19 +101,14 @@
         const lines = document.createElement("div");
         lines.className = "line";
 
-const highlighted = entry.行
-  .filter(line => 
-    keywords.some(kw => normalizeText(line).includes(kw))
+const results = data.filter(entry =>
+  entry.行.some(line =>
+    keywords.some(kw => {
+      const reg = new RegExp(`\\b${kw.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`);
+      return reg.test(line);
+    })
   )
-  .map(line => {
-    let resultLine = line;
-    keywords.forEach(kw => {
-      const reg = new RegExp(kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "gi");
-      resultLine = resultLine.replace(reg, match => `<mark>${match}</mark>`);
-    });
-    return resultLine;
-  });
-        lines.innerHTML = highlighted.join("<br>");
+);        lines.innerHTML = highlighted.join("<br>");
         entryDiv.appendChild(page);
         entryDiv.appendChild(lines);
         resultDiv.appendChild(entryDiv);
