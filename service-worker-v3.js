@@ -20,7 +20,8 @@ const urlsToCache = [
   './hotsuma_aya12.json',
   './hotsuma_aya13.json',
   './hotsuma_aya14.json',
-  './hotsuma_aya15.json'
+  './hotsuma_aya15.json',
+  './hotsuma_aya16.json'
 ];
 
 // インストール時にキャッシュ
