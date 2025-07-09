@@ -1,10 +1,6 @@
 {
   "name": "ヲシテ三文献索引システム",
-  "short_name": "W3IS",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#fffbe6",
-  "theme_color": "#ffcc66",
+  "short_name": "索引",
   "icons": [
     {
       "src": "icon-192.png",
@@ -16,5 +12,9 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#f06292",
+  "background_color": "#f06292"
 }
