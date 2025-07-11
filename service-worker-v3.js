@@ -45,8 +45,10 @@ const urlsToCache = [
   './hotsuma_aya36.json'
 ];
 
-// インストール時にキャッシュ
+// 🪄 インストール時に即座に反映
 self.addEventListener('install', event => {
+  self.skipWaiting(); // 🔥 新しいSWを即適用！
+
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(urlsToCache);
@@ -54,26 +56,29 @@ self.addEventListener('install', event => {
   );
 });
 
-// リクエスト時の挙動
+// 🚀 アクティブ時にすぐクライアントを乗っ取る
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    Promise.all([
+      caches.keys().then(keys =>
+        Promise.all(
+          keys.map(key => {
+            if (key !== CACHE_NAME) {
+              return caches.delete(key);
+            }
+          })
+        )
+      ),
+      clients.claim() // 🔥 全クライアントに即適用！
+    ])
+  );
+});
+
+// 🌐 キャッシュ優先＋ネット fallback
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
       return response || fetch(event.request);
     })
-  );
-});
-
-// 古いキャッシュを削除
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(key => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
-    )
   );
 });
