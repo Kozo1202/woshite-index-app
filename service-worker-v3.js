@@ -1,4 +1,4 @@
-const CACHE_NAME = 'woshite-index-cache-v2';
+const CACHE_NAME = 'woshite-index-cache-v3';
 const urlsToCache = [
   './',
   './index.html',
