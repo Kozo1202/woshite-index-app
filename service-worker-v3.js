@@ -43,6 +43,7 @@ const urlsToCache = [
   './hotsuma_aya34.json',
   './hotsuma_aya35.json',
   './hotsuma_aya36.json',
+  './hotsuma_aya37.json',
   './hotsuma_aya37.json'
 ];
 
