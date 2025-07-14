@@ -45,7 +45,8 @@ const urlsToCache = [
   './hotsuma_aya36.json',
   './hotsuma_aya37.json',
   './hotsuma_aya38.json',
-  './hotsuma_aya39.json'
+  './hotsuma_aya39.json',
+  './hotsuma_aya40.json'
 ];
 
 // 🪄 インストール時に即座に反映
