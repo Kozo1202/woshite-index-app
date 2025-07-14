@@ -48,7 +48,8 @@ const urlsToCache = [
   './hotsuma_aya39.json',
   './hotsuma_aya40.json',
   './mikasa_kuninaduganobu.json',
-  './mikasa_kitsuyochinoaya.json'
+  './mikasa_kitsuyochinoaya.json',
+  './mikasa_sakanorinoaya.json'
 ];
 
 // 🪄 インストール時に即座に反映
