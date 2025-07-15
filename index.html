@@ -22,11 +22,13 @@
       color: #333;
       padding: 1em;
     }
-    input {
-      width: 100%;
+    input, select {
       font-size: 1.2em;
       padding: 0.5em;
       margin-bottom: 1em;
+    }
+    input[type="text"] {
+      width: 100%;
     }
     .result {
       border-top: 1px solid #ccc;
@@ -50,6 +52,20 @@
 <body>
   <h1>ヲシテ文献索引システム</h1>
   <input type="text" id="search" placeholder="検索語を入力してください（スペース区切り可）" />
+
+  <div>
+    <label for="filter-doc">文献：</label>
+    <select id="filter-doc">
+      <option value="">すべて</option>
+      <option value="ほつまつたゑ">ほつまつたゑ</option>
+      <option value="みかさふみ">みかさふみ</option>
+      <option value="もとらつたゑ">もとらつたゑ</option>
+      <option value="その他">その他</option>
+    </select>
+
+    <label for="filter-aya" style="margin-left:1em;">ページ or アヤ：</label>
+    <input type="text" id="filter-aya" placeholder="例: 15-10 や 17-" />
+  </div>
 
   <p style="font-size: 0.3em; color: #555; border-top: 1px solid #ccc; padding-top: 0.5em; margin-bottom: 1em;">
     ※底本：<br>
@@ -140,23 +156,33 @@
       })
       .catch(err => console.error("データ読み込み失敗:", err));
 
-    document.getElementById("search").addEventListener("input", function () {
-      const keywordRaw = this.value.trim();
+    document.getElementById("search").addEventListener("input", runSearch);
+    document.getElementById("filter-doc").addEventListener("change", runSearch);
+    document.getElementById("filter-aya").addEventListener("input", runSearch);
+
+    function runSearch() {
+      const keywordRaw = document.getElementById("search").value.trim();
+      const filterDoc = document.getElementById("filter-doc").value;
+      const filterAya = document.getElementById("filter-aya").value.trim();
       const resultDiv = document.getElementById("result");
       resultDiv.innerHTML = "";
 
-      if (keywordRaw === "") return;
+      if (keywordRaw === "" && filterDoc === "" && filterAya === "") return;
 
       const keywords = keywordRaw.split(/\s+/).map(normalizeText);
 
-      const results = data.filter(entry =>
-        entry.行.some(line =>
+      const results = data.filter(entry => {
+        if (filterDoc && entry.文献 !== filterDoc) return false;
+        if (filterAya && !entry.ページ.startsWith(filterAya)) return false;
+
+        if (keywords.length === 0) return true;
+        return entry.行.some(line =>
           keywords.some(kw => {
             const reg = new RegExp(`${kw.replace(/[-/\^$*+?.()|[\]{}]/g, '\\$&')}`, "gi");
             return reg.test(normalizeText(line));
           })
-        )
-      );
+        );
+      });
 
       results.forEach(entry => {
         const entryDiv = document.createElement("div");
@@ -183,7 +209,7 @@
         entryDiv.appendChild(lines);
         resultDiv.appendChild(entryDiv);
       });
-    });
+    }
   </script>
 
   <script>
