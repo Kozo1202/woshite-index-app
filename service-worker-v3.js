@@ -52,7 +52,7 @@ const urlsToCache = [
   './mikasa_sakanorinoaya.json',
   './mikasa_himemiwonoaya.json',
   './mikasa_koyesofukisakitatsuaya.json',
-  './mikasa_harumiyanoaya.json'.
+  './mikasa_harumiyanoaya.json',
   './mikasa_takamanaruaya.json',
   './mikasa_namekotonoaya.json',
   './mikasa_hanimatsurinoaya.json',
