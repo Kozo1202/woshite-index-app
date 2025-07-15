@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ヲシテ索引システム</title>
+  <title>ヲシテ文献索引システム</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP&display=swap" rel="stylesheet">
 
@@ -48,7 +48,7 @@
   </style>
 </head>
 <body>
-  <h1>ヲシテ三文献索引</h1>
+  <h1>ヲシテ文献索引システム</h1>
   <input type="text" id="search" placeholder="検索語を入力してください（スペース区切り可）" />
 
   <p style="font-size: 0.9em; color: #555; border-top: 1px solid #ccc; padding-top: 0.5em; margin-bottom: 1em;">
@@ -127,7 +127,8 @@
       "mikasa_namekotonoaya.json",
       "mikasa_hanimatsurinoaya.json",
       "etc_toshiuchininasukotonoaya.json",
-      "etc_asahikamifumi.json"
+      "etc_asahikamifumi.json",
+      "etc_kasugayamafumi.json"
     ];
 
     Promise.all(sources.map(src => fetch(src).then(res => res.json())))
