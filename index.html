@@ -7,7 +7,10 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP&display=swap" rel="stylesheet">
 
+<!--
  <script src="main.js?v=20250711"></script>
+-->
+
  <link rel="stylesheet" href="style.css?v=20250711">
 
   <link rel="manifest" href="manifest.json">
@@ -51,23 +54,29 @@
 </head>
 <body>
   <h1>ヲシテ文献索引システム</h1>
-  <input type="text" id="search" placeholder="検索語を入力してください（スペース区切り可）" />
+<input type="text" id="search" placeholder="検索語を入力してください（スペース区切り可）" />
 
-  <div>
-    <label for="filter-doc">文献：</label>
+<div style="margin-bottom: 1em;">
+  <label for="filter-doc">文献名：
     <select id="filter-doc">
       <option value="">すべて</option>
       <option value="ほつまつたゑ">ほつまつたゑ</option>
       <option value="みかさふみ">みかさふみ</option>
       <option value="もとらつたゑ">もとらつたゑ</option>
-      <option value="その他">その他</option>
+      <option value="朝日神紀">朝日神紀</option>
+      <option value="春日山紀">春日山紀</option>
     </select>
+  </label>
 
-    <label for="filter-aya" style="margin-left:1em;">ページ or アヤ：</label>
-    <input type="text" id="filter-aya" placeholder="例: 15-10 や 17-" />
-  </div>
+<label for="filter-aya" style="margin-left: 1em;">アヤ番号：
+  <input type="text" id="filter-aya" placeholder="例: 15" size="4" />
+</label>
 
-  <p style="font-size: 0.3em; color: #555; border-top: 1px solid #ccc; padding-top: 0.5em; margin-bottom: 1em;">
+<label for="filter-page" style="margin-left: 1em;">ページ番号：
+  <input type="text" id="filter-page" placeholder="例: 10" size="4" />
+</label>
+</div>
+ <p style="font-size: 0.3em; color: #555; border-top: 1px solid #ccc; padding-top: 0.5em; margin-bottom: 1em;">
     ※底本：<br>
          『ほつまつたゑ』 小笠原長弘筆写本<br>
          『みかさふみ』 和仁估安聰筆写本<br>
@@ -159,59 +168,64 @@
     document.getElementById("search").addEventListener("input", runSearch);
     document.getElementById("filter-doc").addEventListener("change", runSearch);
     document.getElementById("filter-aya").addEventListener("input", runSearch);
+    document.getElementById("filter-page").addEventListener("input", runSearch);
 
-    function runSearch() {
-      const keywordRaw = document.getElementById("search").value.trim();
-      const filterDoc = document.getElementById("filter-doc").value;
-      const filterAya = document.getElementById("filter-aya").value.trim();
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = "";
+function runSearch() {
+  const keywordRaw = document.getElementById("search").value.trim();
+  const selectedDoc = document.getElementById("filter-doc").value;
+  const filterAya = document.getElementById("filter-aya").value.trim();
+  const filterPage = document.getElementById("filter-page").value.trim();
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = "";
 
-      if (keywordRaw === "" && filterDoc === "" && filterAya === "") return;
+  if (!keywordRaw && !selectedDoc && !filterAya && !filterPage) return;
 
-      const keywords = keywordRaw.split(/\s+/).map(normalizeText);
+  const keywords = keywordRaw.split(/\s+/).map(normalizeText);
 
-      const results = data.filter(entry => {
-        if (filterDoc && entry.文献 !== filterDoc) return false;
-        if (filterAya && !entry.ページ.startsWith(filterAya)) return false;
+  const results = data.filter(entry => {
+    if (selectedDoc && entry.文献 !== selectedDoc) return false;
 
-        if (keywords.length === 0) return true;
-        return entry.行.some(line =>
-          keywords.some(kw => {
-            const reg = new RegExp(`${kw.replace(/[-/\^$*+?.()|[\]{}]/g, '\\$&')}`, "gi");
-            return reg.test(normalizeText(line));
-          })
-        );
+    const [aya, page] = entry.ページ.split("-");
+    if (filterAya && aya !== filterAya) return false;
+    if (filterPage && page !== filterPage) return false;
+
+    if (keywords.length === 0) return true;
+
+    return entry.行.some(line =>
+      keywords.some(kw => {
+        const reg = new RegExp(kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "gi");
+        return reg.test(normalizeText(line));
+      })
+    );
+  });
+
+  results.forEach(entry => {
+    const entryDiv = document.createElement("div");
+    entryDiv.className = "entry";
+
+    const page = document.createElement("div");
+    page.className = "page";
+    page.textContent = `『${entry.文献}』 ${entry.ページ}`;
+
+    const lines = document.createElement("div");
+    lines.className = "line";
+
+    const highlightedLines = entry.行.map(line => {
+      let resultLine = line;
+      keywords.forEach(kw => {
+        const reg = new RegExp(kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "gi");
+        resultLine = resultLine.replace(reg, match => `<mark>${match}</mark>`);
       });
+      return resultLine;
+    });
 
-      results.forEach(entry => {
-        const entryDiv = document.createElement("div");
-        entryDiv.className = "entry";
-
-        const page = document.createElement("div");
-        page.className = "page";
-        page.textContent = `『${entry.文献}』 ${entry.ページ}`;
-
-        const lines = document.createElement("div");
-        lines.className = "line";
-
-        const highlightedLines = entry.行.map(line => {
-          let resultLine = line;
-          keywords.forEach(kw => {
-            const reg = new RegExp(`${kw.replace(/[-/\^$*+?.()|[\]{}]/g, '\\$&')}`, "gi");
-            resultLine = resultLine.replace(reg, match => `<mark>${match}</mark>`);
-          });
-          return resultLine;
-        });
-
-        lines.innerHTML = highlightedLines.join("<br>");
-        entryDiv.appendChild(page);
-        entryDiv.appendChild(lines);
-        resultDiv.appendChild(entryDiv);
-      });
-    }
+    lines.innerHTML = highlightedLines.join("<br>");
+    entryDiv.appendChild(page);
+    entryDiv.appendChild(lines);
+    resultDiv.appendChild(entryDiv);
+  });
+}
   </script>
-
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
